@@ -1,0 +1,150 @@
+import time
+import random
+
+class Player:
+    def __init__(self):
+        self.inventory = []
+        self.health = 100
+
+player = Player()
+
+def print_slow(text):
+    for char in text:
+        print(char, end='', flush=True)
+        time.sleep(0.03)
+    print()
+
+def game_over(reason):
+    print_slow(f"\nGame Over: {reason}")
+    print_slow(f"Your final health: {player.health}")
+    print_slow(f"Your inventory: {', '.join(player.inventory)}")
+    return False
+
+def victory():
+    print_slow("\nCongratulations! You have successfully navigated the Enchanted Forest and found the treasure!")
+    print_slow(f"Your final health: {player.health}")
+    print_slow(f"Your inventory: {', '.join(player.inventory)}")
+    return False
+
+def start_game():
+    player.inventory = []
+    player.health = 100
+    print_slow("Welcome to 'The Enchanted Forest'!")
+    print_slow("You find yourself at the edge of a mysterious forest. Your goal is to find the hidden treasure.")
+    
+    while True:
+        print_slow("\nDo you want to:")
+        print_slow("1. Enter the forest")
+        print_slow("2. Walk around the perimeter")
+        print_slow("3. Check your inventory and health")
+        choice = input("Enter your choice (1, 2 or 3): ")
+        
+        if choice == '1':
+            return forest_path()
+        elif choice == '2':
+            return game_over("You walked around the forest for days but never found the entrance to the treasure. You give up and go home.")
+        elif choice == '3':
+            check_status()
+        else:
+            print_slow("Invalid choice. Please try again.")
+
+def check_status():
+    print_slow(f"\nHealth: {player.health}")
+    print_slow(f"Inventory: {', '.join(player.inventory) if player.inventory else 'Empty'}")
+
+def forest_path():
+    print_slow("\nYou enter the forest and come to a fork in the path.")
+    
+    while True:
+        print_slow("\nDo you want to:")
+        print_slow("1. Take the left path")
+        print_slow("2. Take the right path")
+        print_slow("3. Check your inventory and health")
+        choice = input("Enter your choice (1, 2 or 3): ")
+        
+        if choice == '1':
+            return left_path()
+        elif choice == '2':
+            return right_path()
+        elif choice == '3':
+            check_status()
+        else:
+            print_slow("Invalid choice. Please try again.")
+
+def left_path():
+    print_slow("\nYou take the left path and encounter a magical talking tree.")
+    
+    while True:
+        print_slow("\nDo you want to:")
+        print_slow("1. Ask the tree for directions")
+        print_slow("2. Ignore the tree and continue walking")
+        print_slow("3. Check your inventory and health")
+        choice = input("Enter your choice (1, 2 or 3): ")
+        
+        if choice == '1':
+            print_slow("\nThe tree gives you precise directions to the treasure!")
+            player.inventory.append("Magic Map")
+            print_slow("You received a Magic Map!")
+            return victory()
+        elif choice == '2':
+            return game_over("You get lost in the forest and can't find your way back.")
+        elif choice == '3':
+            check_status()
+        else:
+            print_slow("Invalid choice. Please try again.")
+
+def right_path():
+    print_slow("\nYou take the right path and come across a deep ravine with a rickety bridge.")
+    
+    while True:
+        print_slow("\nDo you want to:")
+        print_slow("1. Cross the bridge")
+        print_slow("2. Look for another way around")
+        print_slow("3. Check your inventory and health")
+        choice = input("Enter your choice (1, 2 or 3): ")
+        
+        if choice == '1':
+            if random.random() < 0.5:
+                print_slow("You carefully cross the bridge. It was scary, but you made it!")
+                player.health -= 20
+                print_slow("The stress of crossing the bridge cost you 20 health points.")
+                return final_challenge()
+            else:
+                return game_over("The bridge breaks under your weight, and you fall into the ravine.")
+        elif choice == '2':
+            print_slow("\nYou find a safe path around the ravine and continue your journey.")
+            return final_challenge()
+        elif choice == '3':
+            check_status()
+        else:
+            print_slow("Invalid choice. Please try again.")
+
+def final_challenge():
+    print_slow("\nYou reach a clearing with a locked chest. There's a riddle inscribed on it.")
+    print_slow("The riddle reads: 'I have cities, but no houses. I have mountains, but no trees. I have water, but no fish. What am I?'")
+    
+    attempts = 3
+    while attempts > 0:
+        answer = input(f"Enter your answer ({attempts} attempts left): ").lower().strip()
+        
+        if answer == "map" or answer == "a map":
+            print_slow("\nThe chest opens, revealing the treasure!")
+            player.inventory.append("Treasure")
+            return victory()
+        else:
+            attempts -= 1
+            if attempts > 0:
+                print_slow("That's not correct. Try again.")
+            else:
+                return game_over("You couldn't solve the riddle and left the treasure behind.")
+
+def main():
+    while True:
+        if not start_game():
+            play_again = input("Do you want to play again? (yes/no): ").lower()
+            if play_again != 'yes':
+                print_slow("Thanks for playing The Enchanted Forest!")
+                break
+
+if __name__ == "__main__":
+    main()
